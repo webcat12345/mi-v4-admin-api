@@ -1,0 +1,35 @@
+spec:
+  name: mi-v4-admin-api
+  region: nyc
+
+  services:
+    - name: api
+      github:
+        repo: webcat12345/mi-v4-admin-api
+        branch: main
+        deploy_on_push: true
+
+      build_command: npm ci && npm run build
+      run_command: node dist/main
+
+      environment_slug: node-js
+      http_port: 3000
+
+      instance_count: 1
+      instance_size_slug: apps-s-1vcpu-0.5gb
+
+      health_check:
+        http_path: /status
+        initial_delay_seconds: 10
+        period_seconds: 30
+
+      envs:
+        - key: ANTHROPIC_API_KEY
+          scope: RUN_TIME
+          type: SECRET
+        - key: ANTHROPIC_MODEL
+          scope: RUN_TIME
+          value: claude-opus-4-5
+        - key: NODE_ENV
+          scope: RUN_TIME
+          value: production
